@@ -6,6 +6,7 @@ from odoo import api, fields, models, _
 from datetime import datetime
 import odoo.addons.decimal_precision as dp
 from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 
 class createpurchaseorder(models.TransientModel):
@@ -41,6 +42,8 @@ class createpurchaseorder(models.TransientModel):
 								'po': record.po,
 								'po_created': record.po_created,
 								}))
+		if not update:
+			raise ValidationError("Lines not Left / Selected for Creating Purchase Order !!!!!!!!!")
 		if update:
 			res.update({'new_order_line_ids':update})
 			return res
