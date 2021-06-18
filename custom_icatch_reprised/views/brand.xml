@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="ict_brand_tree" model="ir.ui.view">
+        <field name="name">ict.brand.tree</field>
+        <field name="model">ict.brand</field>
+        <field name="arch" type="xml">
+            <tree string="brand">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ict_brand_form" model="ir.ui.view">
+        <field name="name">ict.brand.form</field>
+        <field name="model">ict.brand</field>
+        <field name="arch" type="xml">
+            <form string="brand">
+                <group>
+                    <group>
+                        <field name="name" string="Brand"/>
+                        <field name="parent_id" string="Customer"/>
+                    </group>
+                </group>
+<!--                <div id="o_work_employee_main" position="after">-->
+<!--                    <div id="o_employee_right">-->
+<!--                        <h4 class="o_org_chart_title mb16 mt0">Organization Chart</h4>-->
+<!--                        <field name="child_ids" widget="hr_org_chart"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ict_brand_2" model="ir.actions.act_window">
+        <field name="name">Brand</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ict.brand</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your brand here!
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="ict_brand_name_2"
+        name="Brand" action="action_ict_brand_2"
+        parent="sale.sale_order_menu"/>
+
+</odoo>

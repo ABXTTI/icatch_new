@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ict_brand_manager,access.ict.brand.manager,model_ict_brand,,1,1,1,1
+access_ict_campaign_manager,access.ict.campaign.manager,model_ict_campaign,,1,1,1,1
+access_ict_medium_description_manager,access.ict.medium.description.manager,model_ict_medium_description,,1,1,1,1
+access_ict_ink_type_manager,access.ict.ink.type.manager,model_ict_ink_type,,1,1,1,1
+access_ict_media_description_manager,access.ict.media.description.manager,model_ict_media_description,,1,1,1,1
+access_ict_printer_manager,access.ict.printer.manager,model_ict_printer,,1,1,1,1
+access_ict_resolution_manager,access.ict.resolution.manager,model_ict_resolution,,1,1,1,1
+access_ict_shop_manager,access.ict.shop.manager,model_ict_shop,,1,1,1,1
+access_ict_city_manager,access.ict.city.manager,model_ict_city,,1,1,1,1

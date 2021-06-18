@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="customize_purchase_order_form" model="ir.ui.view">
+        <field name="name">customize.purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='product_qty']" position="attributes">
+                <attribute name="string">Total Sqr.Feet/Qty</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="x_ntn"/>
+                <field name="x_strn"/>
+                <field name="x_mobile"/>
+                <field name="x_phone"/>
+                <field name="x_email"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_order']" position="before">
+                <field name="x_campaign"/>
+                <field name="x_brand"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='product_id']" position="after">
+                    <field name="i_shop"/>
+                    <field name="i_city"/>
+<!--                    <field name="i_printmedia"/>-->
+                    <field name="i_mediadescription" domain="[('related_product','=',product_id)]"/>
+<!--                    <field name="i_lamination"/>-->
+<!--                    <field name="i_printer"/>-->
+                    <field name="i_medium_description" string="Medium Description"/>
+<!--                    <field name="i_resolution"/>-->
+<!--                    <field name="i_inktype"/>-->
+                    <field name="i_size"/>
+<!--                    <field name="i_fabrication"/>-->
+                    <field name="i_width"/>
+                    <field name="i_height"/>
+                    <field name="i_sqrfeet"/>
+                    <field name="i_qty" string="Qty"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="ict_resolution_tree" model="ir.ui.view">
+        <field name="name">ict.resolution.tree</field>
+        <field name="model">ict.resolution</field>
+        <field name="arch" type="xml">
+            <tree string="Resolution">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ict_resolution_form" model="ir.ui.view">
+        <field name="name">ict.resolution.form</field>
+        <field name="model">ict.resolution</field>
+        <field name="arch" type="xml">
+            <form string="Resolution" class="o_sale_order">
+                <group>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ict_resolution" model="ir.actions.act_window">
+        <field name="name">Resolution</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ict.resolution</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your document!
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="ict_resolution"
+        name="Resolution" action="action_ict_resolution"
+        parent="sale.sale_order_menu"/>
+
+</odoo>

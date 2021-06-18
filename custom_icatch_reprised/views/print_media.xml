@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="ict_print_media_tree" model="ir.ui.view">
+        <field name="name">ict.print.media.tree</field>
+        <field name="model">ict.print.media</field>
+        <field name="arch" type="xml">
+            <tree string="Print Media">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ict_print_media_form" model="ir.ui.view">
+        <field name="name">ict.print.media.form</field>
+        <field name="model">ict.print.media</field>
+        <field name="arch" type="xml">
+            <form string="Print Media" class="o_sale_order">
+                <group>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ict_print_media" model="ir.actions.act_window">
+        <field name="name">Print Media</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ict.print.media</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your brand here!
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="ict_print_media"
+        name="Print Media" action="action_ict_print_media"
+        parent="sale.sale_order_menu"/>
+
+</odoo>
