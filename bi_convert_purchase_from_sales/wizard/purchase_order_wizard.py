@@ -24,8 +24,16 @@ class createpurchaseorder(models.TransientModel):
 		update = []
 		for record in data.order_line:
 			if record.po and not record.po_created:
+				if not record.product_id.default_code:
+					raise ValidationError("Internal Reference for the Product Does Not Exist")
+				p_product = self.env['product.product'].search([('default_code', '=', (record.product_id.default_code + "p"))])
+				if len(p_product) > 1:
+					raise ValidationError("Duplicate Products /Or products with same Internal Reference in Products List !!!!!!")
+				elif len(p_product) < 1:
+					raise ValidationError("Purchasable Product Does Not Exist e.g. 1022p for 1022")
+
 				update.append((0,0,{
-								'product_id' : record.product_id.id,
+								'product_id' : p_product.id,
 								'product_uom' : record.product_uom.id,
 								'order_id': record.order_id.id,
 								'name' : record.name,
