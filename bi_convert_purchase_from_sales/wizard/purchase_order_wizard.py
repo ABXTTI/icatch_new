@@ -96,12 +96,13 @@ class createpurchaseorder(models.TransientModel):
 									'i_height' : data.i_height,
 									}])
 
-		ref = so.order_line.search([('po', '=', True)])
+		ref = so.order_line.search([('po', '=', True), ('order_id', '=', so.id)])
 		for rec in ref:
-			rec.po_created = True
-			
+			if rec.po and not rec.po_created:
+				rec.po_created = True
+
 		print(ref, "TTTTTTTTTTTTTTYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
-		print(self.abc)
+		# print(self.abc)
 
 		if value:
 			res.create({
