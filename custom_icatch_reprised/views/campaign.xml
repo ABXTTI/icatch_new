@@ -18,9 +18,9 @@
             <form string="campaign" class="o_sale_order">
                 <group>
                     <group>
-                        <field name="name"/>
-                        <field name="related_brand"/>
                         <field name="related_customer"/>
+                        <field name="related_brand"/>
+                        <field name="name"/>
                     </group>
                 </group>
             </form>

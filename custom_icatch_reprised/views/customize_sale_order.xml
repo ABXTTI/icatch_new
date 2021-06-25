@@ -8,7 +8,8 @@
             <xpath expr="//tree/field[@name='product_id']" position="after">
                 <field name="i_shop" optional="show"/>
                 <field name="i_city" optional="show"/>
-                <field name="po"/>
+                <field name="po" attrs="{'readonly': [('po_created','=',True)]}"/>
+                <field name="po_created" optional="hide"/>
                 <field name="i_mediadescription" domain="[('related_product','=',product_id)]" optional="show"/>
                 <field name="i_printer" optional="hide"/>
                 <field name="i_medium_description" optional="show"/>
@@ -26,15 +27,19 @@
                 <attribute name="optional">hide</attribute>
             </xpath>
             <xpath expr="//tree/field[@name='product_uom_qty']" position="after">
+                <field name="i_totalsqrfeet"/>
                 <field name="i_tentative_start_date" optional="hide"/>
                 <field name="i_tentative_end_date" optional="hide"/>
                 <field name="i_duration" optional="hide"/>
                 <field name="i_lamination" optional="hide"/>
                 <field name="i_fabrication" optional="hide"/>
             </xpath>
+            <xpath expr="//tree/field[@name='product_uom_qty']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
             <xpath expr="//field[@name='validity_date']" position="before">
-                <field name="x_campaign" domain="[('related_brand', '=', x_brand)]"/>
                 <field name="x_brand" domain="[('parent_id', '=', partner_id)]"/>
+                <field name="x_campaign" domain="[('related_brand', '=', x_brand)]"/>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="x_ntn"/>

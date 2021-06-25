@@ -32,7 +32,7 @@ class SaleOrderLine(models.Model):
 
     po = fields.Boolean(string="PO")
     po_created = fields.Boolean(string="PO Created")
-    x_uom = fields.Selection([('squarefeet', 'Sqr.Ft.'), ('inches', 'Inches')], 'Measure', default='squarefeet')
+    x_uom = fields.Selection([('squarefeet', 'Sqr.Ft.'), ('inches', 'Inches'), ('ooh', 'OOH'), ('unit', 'Unit')], 'Measure', default='unit')
     x_is_ooh = fields.Boolean(related="product_id.x_is_ooh")
     i_tentative_start_date = fields.Date(string="Tentative"
                                                 "start Date")
@@ -67,22 +67,40 @@ class SaleOrderLine(models.Model):
     def compute_sqfeet(self):
         for rec in self:
             if rec.x_uom:
-                if rec.x_uom == "squarefeet":
+                if rec.x_uom == "squarefeet" or rec.x_uom == "ooh" or rec.x_uom == "unit":
                     rec.i_sqrfeet = rec.i_width * rec.i_height
                 elif rec.x_uom == "inches":
-                    rec.i_sqrfeet = (rec.i_width * rec.i_height)/12
+                    rec.i_sqrfeet = (rec.i_width * rec.i_height)/144
+
     i_sqrfeet = fields.Float(string="Sqr.Feet", compute='compute_sqfeet', store=True)
 
     i_qty = fields.Float(string="Qty.ICT")
 
-    @api.depends('i_qty', 'i_sqrfeet')
+    @api.onchange('product_id')
+    def on_product_change(self):
+        for rec in self:
+            rec.i_shop = ""
+            rec.i_city = ""
+            rec.i_medium_description = ""
+            rec.i_mediadescription = ""
+            rec.i_width = 1
+            rec.i_height = 1
+            if rec.product_id.x_is_units:
+                rec.x_uom = "unit"
+            elif rec.x_is_ooh:
+                rec.x_uom = "ooh"
+            else:
+                rec.x_uom = "squarefeet"
+
+    @api.depends('i_qty', 'i_sqrfeet', 'x_uom')
     def compute_total_qty(self):
         for rec in self:
-            if rec.product_id.x_is_units:
-                rec.i_width = 1
-                rec.i_height = 1
-                rec.product_uom_qty = rec.i_qty * 1
+            if rec.product_id.x_is_units or rec.x_is_ooh:
+                rec.product_qty = rec.i_qty * 1
+                rec.i_totalsqrfeet = 1
             else:
-                rec.product_uom_qty = rec.i_qty * rec.i_sqrfeet
+                rec.product_qty = rec.i_qty * rec.i_sqrfeet
+                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
 
     product_uom_qty = fields.Float(string="Total Sqr.Feet/Qty", compute='compute_total_qty', store=True)
+    i_totalsqrfeet = fields.Float(string="Total Sqr.ft./Qty.", compute='compute_total_qty', store=True)

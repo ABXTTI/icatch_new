@@ -5,8 +5,11 @@
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.purchase_order_form" />
         <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='product_qty']" position="after">
+                <field name="i_totalsqrfeet"/>
+            </xpath>
             <xpath expr="//tree/field[@name='product_qty']" position="attributes">
-                <attribute name="string">Total Sqr.Feet/Qty</attribute>
+                <attribute name="optional">hide</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_ref']" position="after">
                 <field name="x_ntn"/>
@@ -15,12 +18,13 @@
                 <field name="x_phone"/>
                 <field name="x_email"/>
             </xpath>
-            <xpath expr="//field[@name='name']" position="attributes">
+            <xpath expr="//tree/field[@name='name']" position="attributes">
                 <attribute name="optional">hide</attribute>
             </xpath>
             <xpath expr="//field[@name='date_order']" position="before">
-                <field name="x_campaign"/>
+                <field name="x_customername"/>
                 <field name="x_brand"/>
+                <field name="x_campaign"/>
             </xpath>
             <xpath expr="//tree/field[@name='product_id']" position="after">
                     <field name="i_shop"/>
@@ -32,7 +36,8 @@
                     <field name="i_medium_description" string="Medium Description"/>
 <!--                    <field name="i_resolution"/>-->
 <!--                    <field name="i_inktype"/>-->
-                    <field name="i_size"/>
+                    <field name="i_size" optional="hide"/>
+                    <field name="x_uom"/>
 <!--                    <field name="i_fabrication"/>-->
                     <field name="i_width"/>
                     <field name="i_height"/>
