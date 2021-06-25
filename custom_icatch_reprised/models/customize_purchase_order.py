@@ -98,10 +98,10 @@ class PurchaseOrderLine(models.Model):
         for rec in self:
             for rec in self:
                 if rec.product_id.x_is_units or rec.x_is_ooh:
-                    rec.product_uom_qty = rec.i_qty * 1
+                    rec.product_qty = rec.i_qty * 1
                     rec.i_totalsqrfeet = 1
                 else:
-                    rec.product_uom_qty = rec.i_qty * rec.i_sqrfeet
+                    rec.product_qty = rec.i_qty * rec.i_sqrfeet
                     rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
 
     product_qty = fields.Float(string="AQty", compute='compute_total_qty', store=True)
