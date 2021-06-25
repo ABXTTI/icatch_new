@@ -14,7 +14,7 @@ class PurchaseOrder(models.Model):
             if x:
                 rec.x_origin = x.id
 
-    x_campaign = fields.Many2one('ict.campaign', string="Campaign", related="x_origin.x_campaign", readonly=False)
+    x_campaign = fields.Many2one('ict.campaign', string="Campaign", readonly=False)
     x_customername = fields.Many2one('res.partner', string="Customer", related="x_origin.partner_id", readonly=False)
     x_ntn = fields.Char(string="NTN", related="partner_id.vat")
     x_strn = fields.Char(string="STRN", related="partner_id.strn")

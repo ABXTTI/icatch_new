@@ -31,6 +31,7 @@
                             <field name="i_width"/>
                             <field name="i_height"/>
                             <field name="name"/>
+                            <field name="i_qty"/>
                             <field name="product_qty"/>
                             <field name="product_uom" groups="uom.group_uom" class="oe_inline"/>
                             <field name="po"/>

@@ -13,7 +13,7 @@ class createpurchaseorder(models.TransientModel):
 	_name = 'create.purchaseorder'
 	_description = "Create Purchase Order"
 
-	new_order_line_ids = fields.One2many( 'getsale.orderdata', 'new_order_line_id',string="Order Line")
+	new_order_line_ids = fields.One2many('getsale.orderdata', 'new_order_line_id',string="Order Line")
 	partner_id = fields.Many2one('res.partner', string='Vendor', required = True)
 	date_order = fields.Datetime(string='Order Date', required=True, copy=False, default=fields.Datetime.now)
 	
@@ -24,6 +24,7 @@ class createpurchaseorder(models.TransientModel):
 		update = []
 		for record in data.order_line:
 			if record.po and not record.po_created:
+				# print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
 				if not record.product_id.default_code:
 					raise ValidationError("Internal Reference for the Product Does Not Exist")
 				p_product = self.env['product.product'].search([('default_code', '=', (record.product_id.default_code + "p"))])
@@ -32,14 +33,15 @@ class createpurchaseorder(models.TransientModel):
 				elif len(p_product) < 1:
 					raise ValidationError("Purchasable Product Does Not Exist e.g. 1022p for 1022")
 
-				update.append((0,0,{
-								'product_id' : p_product.id,
-								'product_uom' : record.product_uom.id,
+				update.append((0, 0, {
+								'product_id': p_product.id,
+								'product_uom': record.product_uom.id,
 								'order_id': record.order_id.id,
-								'name' : record.name,
-								'product_qty' : record.product_uom_qty,
-								'price_unit' : record.price_unit,
-								'product_subtotal' : record.price_subtotal,
+								'name': record.name,
+								'i_qty': record.i_qty,
+								'product_qty': record.product_uom_qty,
+								'price_unit': record.price_unit,
+								'product_subtotal': record.price_subtotal,
 								'i_shop': record.i_shop.id,
 								'i_city': record.i_city.id,
 								'i_mediadescription': record.i_mediadescription.id,
@@ -71,16 +73,14 @@ class createpurchaseorder(models.TransientModel):
 			if partner_pricelist:
 				product_context = dict(self.env.context, partner_id=self.partner_id.id, date=self.date_order, uom=data.product_uom.id)
 				final_price, rule_id = partner_pricelist.with_context(product_context).get_product_price_rule(data.product_id, data.product_qty or 1.0, self.partner_id)
-			
+
 			else:
 				final_price = data.product_id.standard_price
 			if data.po and not data.po_created:
-				ref = so.order_line.search([('product_id', '=', data.product_id.id), ('i_shop', '=', data.i_shop.id),
-											('product_uom_qty', '=', data.product_qty)])
-				ref.po_created = True
 				value.append([0,0,{
 									'product_id' : data.product_id.id,
 									'name' : data.name,
+									'i_qty' : data.i_qty,
 									'product_qty' : data.product_qty,
 									'order_id':data.order_id.id,
 									'product_uom' : data.product_uom.id,
@@ -95,6 +95,14 @@ class createpurchaseorder(models.TransientModel):
 									'i_width' : data.i_width,
 									'i_height' : data.i_height,
 									}])
+
+		ref = so.order_line.search([('po', '=', True)])
+		for rec in ref:
+			rec.po_created = True
+			
+		print(ref, "TTTTTTTTTTTTTTYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+		print(self.abc)
+
 		if value:
 			res.create({
 							'partner_id' : self.partner_id.id,
@@ -103,8 +111,10 @@ class createpurchaseorder(models.TransientModel):
 							'origin' : sale_order_name,
 							'partner_ref' : sale_order_name,
 							'x_origin': so.id,
+							'x_campaign': data.x_campaign.id,
+							'x_brand': data.x_brand.id,
 						})
-		
+
 			return res
 
 
@@ -129,6 +139,9 @@ class Getsaleorderdata(models.TransientModel):
 	i_size = fields.Char(string="Size")
 	i_width = fields.Float(string="Width", default=1)
 	i_height = fields.Float(string="Height", default=1)
+	i_qty = fields.Float(string="i_qty")
+	x_campaign = fields.Many2one('ict.campaign', string="Campaign")
+	x_brand = fields.Many2one('ict.brand', string="Brand")
 	po = fields.Boolean(string="PO")
 	po_created = fields.Boolean(string="PO Created")
 

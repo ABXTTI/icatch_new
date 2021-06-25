@@ -31,7 +31,7 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     po = fields.Boolean(string="PO")
-    po_created = fields.Boolean(string="PO Created")
+    po_created = fields.Boolean(string="PO Created", default=False)
     x_uom = fields.Selection([('squarefeet', 'Sqr.Ft.'), ('inches', 'Inches'), ('ooh', 'OOH'), ('unit', 'Unit')], 'Measure', default='unit')
     x_is_ooh = fields.Boolean(related="product_id.x_is_ooh")
     i_tentative_start_date = fields.Date(string="Tentative"
@@ -79,6 +79,8 @@ class SaleOrderLine(models.Model):
     @api.onchange('product_id')
     def on_product_change(self):
         for rec in self:
+            rec.po_created = False
+            rec.po = False
             rec.i_shop = ""
             rec.i_city = ""
             rec.i_medium_description = ""

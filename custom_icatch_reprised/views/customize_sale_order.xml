@@ -9,7 +9,7 @@
                 <field name="i_shop" optional="show"/>
                 <field name="i_city" optional="show"/>
                 <field name="po" attrs="{'readonly': [('po_created','=',True)]}"/>
-                <field name="po_created" optional="hide"/>
+                <field name="po_created" optional="hide" readonly="True"/>
                 <field name="i_mediadescription" domain="[('related_product','=',product_id)]" optional="show"/>
                 <field name="i_printer" optional="hide"/>
                 <field name="i_medium_description" optional="show"/>
