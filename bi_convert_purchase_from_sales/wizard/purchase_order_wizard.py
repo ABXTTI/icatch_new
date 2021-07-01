@@ -39,6 +39,7 @@ class createpurchaseorder(models.TransientModel):
 								'order_id': record.order_id.id,
 								'name': record.name,
 								'i_qty': record.i_qty,
+								'x_uom': record.x_uom,
 								'product_qty': record.product_uom_qty,
 								'price_unit': record.price_unit,
 								'product_subtotal': record.price_subtotal,
@@ -81,6 +82,7 @@ class createpurchaseorder(models.TransientModel):
 									'product_id' : data.product_id.id,
 									'name' : data.name,
 									'i_qty' : data.i_qty,
+									'x_uom': data.x_uom,
 									'product_qty' : data.product_qty,
 									'order_id':data.order_id.id,
 									'product_uom' : data.product_uom.id,
@@ -112,8 +114,8 @@ class createpurchaseorder(models.TransientModel):
 							'origin' : sale_order_name,
 							'partner_ref' : sale_order_name,
 							'x_origin': so.id,
-							'x_campaign': data.x_campaign.id,
-							'x_brand': data.x_brand.id,
+							'x_campaign': so.x_campaign.id,
+							'x_brand': so.x_brand.id,
 						})
 
 			return res
@@ -141,6 +143,8 @@ class Getsaleorderdata(models.TransientModel):
 	i_width = fields.Float(string="Width", default=1)
 	i_height = fields.Float(string="Height", default=1)
 	i_qty = fields.Float(string="i_qty")
+	x_uom = fields.Selection([('squarefeet', 'Sqr.Ft.'), ('inches', 'Inches'),
+							  ('ooh', 'OOH'), ('unit', 'Unit')], 'Measure', default='unit')
 	x_campaign = fields.Many2one('ict.campaign', string="Campaign")
 	x_brand = fields.Many2one('ict.brand', string="Brand")
 	po = fields.Boolean(string="PO")

@@ -8,3 +8,16 @@ class IctMediumDesiption(models.Model):
     _rec_name = 'name'
 
     name = fields.Char(string="Medium Description", required=True)
+
+    @api.model
+    def create(self, vals):
+        print("its working")
+        product = self.env['product.template']
+        product.create({
+            'name': vals['name'],
+            'type': "product",
+            'sale_ok': False,
+            'purchase_ok': True,
+            'x_is_mediadescription': True,
+        })
+        return super(IctMediumDesiption, self).create(vals)

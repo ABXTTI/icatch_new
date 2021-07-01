@@ -23,8 +23,8 @@
             </xpath>
             <xpath expr="//field[@name='date_order']" position="before">
                 <field name="x_customername"/>
-                <field name="x_brand"/>
-                <field name="x_campaign"/>
+                <field name="x_brand" domain="[('parent_id','=', x_customername)]"/>
+                <field name="x_campaign" domain="[('related_brand','=', x_brand)]"/>
             </xpath>
             <xpath expr="//tree/field[@name='product_id']" position="after">
                     <field name="i_shop"/>

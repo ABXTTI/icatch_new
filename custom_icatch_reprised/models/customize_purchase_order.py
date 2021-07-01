@@ -22,11 +22,12 @@ class PurchaseOrder(models.Model):
     x_phone = fields.Char(string="Phone", related="partner_id.phone")
     x_email = fields.Char(string="Email", related="partner_id.email")
 
-    @api.depends('x_campaign')
-    def get_brand(self):
-        self.x_brand = self.x_campaign.related_brand
 
-    x_brand = fields.Many2one('ict.brand', string="Brand", compute='get_brand', store=True, readonly=False)
+    # @api.depends('x_campaign')
+    # def get_brand(self):
+    #     self.x_brand = self.x_campaign.related_brand
+
+    x_brand = fields.Many2one('ict.brand', string="Brand", readonly=False, store=True)
 
 
 class PurchaseOrderLine(models.Model):
