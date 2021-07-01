@@ -17,9 +17,9 @@
 <!--                <field name="i_resolution" optional="hide"/>-->
                 <field name="x_is_ooh" optional="hide"/>
                 <field name="i_inktype" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_size" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_width" optional="show" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_height" optional="show" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
+                <field name="i_size" optional="hide"/>
+                <field name="i_width" optional="show"/>
+                <field name="i_height" optional="show"/>
                 <field name="i_sqrfeet" optional="show"/>
                 <field name="i_qty" string="Qty" optional="show"/>
             </xpath>

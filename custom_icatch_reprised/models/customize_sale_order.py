@@ -9,9 +9,20 @@ class ProductTemplate(models.Model):
     x_is_mediadescription = fields.Boolean("Is Media Description", default=False)
     x_is_medium_description = fields.Boolean("Is Medium Description", defualt=False)
 
+# class MrpBomLine(models.Model):
+#     _inherit = "mrp.bom.line"
+#
+#     x_is_mediadescription = fields.Boolean(string="Is Media Description", related="product_id.x_is_mediadescription")
+#     x_is_medium_description = fields.Boolean("Is Medium Description", related="product_id.x_is_medium_description")
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
+
+    @api.onchange('partner_id')
+    def onchange_parnterid(self):
+        self.x_brand = ""
+        self.x_campaign = ""
 
     purchase_order_ids = fields.One2many('purchase.order', 'x_origin', string="Purchase Orders")
     x_ntn = fields.Char(string="NTN", related="partner_id.vat")
@@ -36,6 +47,7 @@ class SaleOrder(models.Model):
 
     @api.onchange('x_brand')
     def onchange_brand(self):
+        self.x_campaign = ""
         if not self.x_brand.parent_id:
             self.x_brand.parent_id = self.partner_id.id
 
@@ -119,10 +131,10 @@ class SaleOrderLine(models.Model):
     @api.depends('i_qty', 'i_sqrfeet', 'x_uom')
     def compute_total_qty(self):
         for rec in self:
-            if rec.product_id.x_is_units or rec.x_is_ooh:
+            if rec.x_uom == "unit" or rec.x_uom == "ooh":
                 rec.product_uom_qty = rec.i_qty * 1
                 rec.i_totalsqrfeet = 1
-            elif rec.x_is_ooh:
+            elif rec.x_uom == "ooh":
                 rec.product_uom_qty = rec.i_duration
                 rec.i_totalsqrfeet = 1
             else:
@@ -132,59 +144,69 @@ class SaleOrderLine(models.Model):
     product_uom_qty = fields.Float(string="Total Sqr.Feet/Qty", compute='compute_total_qty', store=True)
     i_totalsqrfeet = fields.Float(string="Total Sqr.ft./Qty.", compute='compute_total_qty', store=True)
 
-    # @api.onchange('product_id', 'i_mediadescription', 'i_medium_description', 'product_uom_qty')
-    # def onchange_for_bom(self):
-    #     is_manufacture = self.product_id.route_ids.search([('name', '=', "Manufacture")])
-    #     print("WWWWWWWWWWWWWWWWWWWWWWWWWWWW", is_manufacture)
-    #     if is_manufacture:
-    #         bom_id = self.env['mrp.bom'].search([('product_tmpl_id', '=', self.product_id.id)])
-    #         if bom_id:
-    #             print("hahahahahahahahahahah")
-    #             line_ids = bom_id.bom_line_ids
-    #             if line_ids:
-    #                 for rec in line_ids:
-    #                     if rec.product_id.x_is_mediadescription or rec.product_id.x_is_medium_description:
-    #                         rec.unlink()
-    #
-    #             if self.po:
-    #                 if self.i_medium_description:
-    #                     bom_id.write({
-    #                         'bom_line_ids': [(0, 0, {'product_id': self.i_medium_description.name})],
-    #                     })
-    #
-    #             elif not self.po:
-    #                 if self.i_mediadescription:
-    #                     bom_id.write({
-    #                         'bom_line_ids': [(0, 0, {'product_id': self.i_mediadescription.name})],
-    #                     })
-    #
-    #                 if self.i_medium_description:
-    #                     bom_id.write({
-    #                         'bom_line_ids': [(0, 0, {'product_id': self.i_medium_description.name})],
-    #                     })
-    #
-    #
-    #
-    #         else:
-    #             bom = self.env['mrp.bom']
-    #             bom.create({
-    #                 'product_tmpl_id': self.product_id.id,
-    #             })
-    #             if self.po:
-    #                 if self.i_medium_description:
-    #                     bom_id.write({
-    #                         'bom_line_ids': [(0, 0, {'product_id': self.i_medium_description.name})],
-    #                     })
-    #
-    #             elif not self.po:
-    #                 if self.i_mediadescription:
-    #                     bom_id.write({
-    #                         'bom_line_ids': [(0, 0, {'product_id': self.i_mediadescription.name})],
-    #                     })
-    #
-    #                 if self.i_medium_description:
-    #                     bom_id.write({
-    #                         'bom_line_ids': [(0, 0, {'product_id': self.i_medium_description.name})],
-    #                     })
-    #             print("ahahahahahahahahah222222222222222")
+    # ######################### Create BOM ###############################################
 
+    @api.onchange('product_id', 'i_mediadescription', 'i_medium_description', 'po')
+    def onchange_for_bom(self):
+        if self.product_id:
+            is_manufacture = self.product_id.route_ids.search([('name', '=', "Manufacture")])
+            print("WWWWWWWWWWWWWWWWWWWWWWWWWWWW", is_manufacture)
+            if is_manufacture:
+                bom_id = self.env['mrp.bom'].search([('product_tmpl_id', '=', self.product_id.id)])
+                if bom_id:
+                    print("hahahahahahahahahahah")
+                    line_ids = bom_id.bom_line_ids
+                    if line_ids:
+                        for rec in line_ids:
+                            if rec.product_id.x_is_mediadescription or rec.product_id.x_is_medium_description:
+                                rec.unlink()
+
+                    if not self.po:
+                        if self.i_mediadescription and self.i_medium_description:
+                            lines = []
+                            product = self.env['product.product'].search(
+                                    [('name', '=', self.i_medium_description.name)])
+                            if product:
+                                lines.append((0,0, {'product_id': product.id}))
+                            product1 = self.env['product.product'].search(
+                                [('name', '=', self.i_mediadescription.name)])
+                            if product1:
+                                lines.append((0,0, {'product_id': product1.id}))
+
+                            bom_id.bom_line_ids = lines
+                    if self.po:
+                        if self.i_mediadescription and self.i_medium_description:
+                            lines = []
+                            product = self.env['product.product'].search(
+                                    [('name', '=', self.i_medium_description.name)])
+                            if product:
+                                lines.append((0,0, {'product_id': product.id}))
+
+                            bom_id.bom_line_ids = lines
+                else:
+                    bom = self.env['mrp.bom']
+                    bom.create({
+                        'product_tmpl_id': self.product_id.id,
+                    })
+                    if not self.po:
+                        if self.i_mediadescription and self.i_medium_description:
+                            lines = []
+                            product = self.env['product.product'].search(
+                                    [('name', '=', self.i_medium_description.name)])
+                            if product:
+                                lines.append((0,0, {'product_id': product.id}))
+                            product1 = self.env['product.product'].search(
+                                [('name', '=', self.i_mediadescription.name)])
+                            if product1:
+                                lines.append((0,0, {'product_id': product1.id}))
+
+                            bom_id.bom_line_ids = lines
+                    if self.po:
+                        if self.i_mediadescription and self.i_medium_description:
+                            lines = []
+                            product = self.env['product.product'].search(
+                                    [('name', '=', self.i_medium_description.name)])
+                            if product:
+                                lines.append((0,0, {'product_id': product.id}))
+
+                            bom_id.bom_line_ids = lines
