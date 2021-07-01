@@ -205,7 +205,7 @@ class SaleOrderLine(models.Model):
                         if self.i_mediadescription and self.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
-                                    [('name', '=', self.i_medium_description.name)])
+                                    [('name', '=', self.i_mediadescription.name)])
                             if product:
                                 lines.append((0,0, {'product_id': product.id}))
 
