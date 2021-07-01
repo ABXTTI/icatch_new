@@ -133,10 +133,10 @@ class SaleOrderLine(models.Model):
         for rec in self:
             if rec.x_uom == "unit" or rec.x_uom == "ooh":
                 rec.product_uom_qty = rec.i_qty * 1
-                rec.i_totalsqrfeet = 1
+                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             elif rec.x_uom == "ooh":
                 rec.product_uom_qty = rec.i_duration
-                rec.i_totalsqrfeet = 1
+                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             else:
                 rec.product_uom_qty = rec.i_qty * rec.i_sqrfeet
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet

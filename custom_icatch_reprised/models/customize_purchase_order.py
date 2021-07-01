@@ -100,7 +100,7 @@ class PurchaseOrderLine(models.Model):
             for rec in self:
                 if rec.x_uom == "unit" or rec.x_uom == "ooh":
                     rec.product_qty = rec.i_qty * 1
-                    rec.i_totalsqrfeet = 1
+                    rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
 
                 else:
                     rec.product_qty = rec.i_qty * rec.i_sqrfeet
