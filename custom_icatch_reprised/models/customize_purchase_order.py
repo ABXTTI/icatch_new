@@ -69,13 +69,13 @@ class PurchaseOrderLine(models.Model):
     def compute_sqfeet(self):
         for rec in self:
             if rec.x_uom:
-                if rec.x_uom == "squarefeet" or rec.x_uom == "ooh" or rec.x_uom == "unit":
-                    rec.i_sqrfeet = rec.i_width * rec.i_height
-                elif rec.x_uom == "inches":
+                if rec.x_uom == "inches":
                     rec.i_sqrfeet = (rec.i_width * rec.i_height)/144
+                else:
+                    rec.i_sqrfeet = rec.i_width * rec.i_height
+
 
     i_sqrfeet = fields.Float(string="Sqr.Feet", compute='compute_sqfeet', store=True)
-
     i_qty = fields.Float(string="Qty.ICT")
 
     @api.onchange('product_id')
@@ -98,9 +98,10 @@ class PurchaseOrderLine(models.Model):
     def compute_total_qty(self):
         for rec in self:
             for rec in self:
-                if rec.product_id.x_is_units or rec.x_is_ooh:
+                if rec.x_uom == "unit" or rec.x_uom == "ooh":
                     rec.product_qty = rec.i_qty * 1
-                    rec.i_totalsqrfeet = 1
+                    rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
+
                 else:
                     rec.product_qty = rec.i_qty * rec.i_sqrfeet
                     rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet

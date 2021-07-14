@@ -5,6 +5,9 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='price_subtotal']" position="after">
+                <field name="map_link"/>
+            </xpath>
             <xpath expr="//tree/field[@name='product_id']" position="after">
                 <field name="i_shop" optional="show"/>
                 <field name="i_city" optional="show"/>
@@ -13,13 +16,14 @@
                 <field name="i_mediadescription" domain="[('related_product','=',product_id)]" optional="show"/>
                 <field name="i_printer" optional="hide"/>
                 <field name="i_medium_description" optional="show"/>
-                <field name="x_uom" optional="show"/>
+                <field name="x_type" optional="show" readonly="True"/>
+                <field name="x_uom" optional="show" attrs="{'readonly': ['|', ('x_type','=','unit'), ('x_type', '=', 'ooh')]}"/>
 <!--                <field name="i_resolution" optional="hide"/>-->
                 <field name="x_is_ooh" optional="hide"/>
                 <field name="i_inktype" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_size" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_width" optional="show" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_height" optional="show" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
+                <field name="i_size" optional="hide"/>
+                <field name="i_width" optional="show"/>
+                <field name="i_height" optional="show"/>
                 <field name="i_sqrfeet" optional="show"/>
                 <field name="i_qty" string="Qty" optional="show"/>
             </xpath>
