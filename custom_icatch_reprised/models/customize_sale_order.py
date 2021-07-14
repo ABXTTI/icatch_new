@@ -168,14 +168,14 @@ class SaleOrderLine(models.Model):
     i_fabrication = fields.Boolean(string="Fabrination")
 
     @api.onchange('i_medium_description')
-    def onchange_i_mediadescription(self):
+    def onchange_i_mediumdescription(self):
         # print("111111111111111111111111111111111111111111111111")
         if not self.product_id and self.i_medium_description.related_product:
             raise ValidationError("Please Select Product First.")
         else:
             if not self.i_medium_description.related_product:
                 self.i_medium_description.related_product = self.product_id.id
-                # print("33333333333333333333333333333333333333333333")
+                print("33333333333333333333333333333333333333333333")
     i_medium_description = fields.Many2one('ict.medium.description', string="Medium Description")
     i_city = fields.Many2one('ict.city', string="City")
     i_shop = fields.Many2one('ict.shop', string="Location")

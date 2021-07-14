@@ -15,7 +15,7 @@
                 <field name="po_created" optional="hide" readonly="True"/>
                 <field name="i_mediadescription" domain="[('related_product','=',product_id)]" optional="show"/>
                 <field name="i_printer" optional="hide"/>
-                <field name="i_medium_description" optional="show"/>
+                <field name="i_medium_description" domain="[('related_product','=',product_id)]" optional="show"/>
                 <field name="x_type" optional="show" readonly="True"/>
                 <field name="x_uom" optional="show" attrs="{'readonly': ['|', ('x_type','=','unit'), ('x_type', '=', 'ooh')]}"/>
 <!--                <field name="i_resolution" optional="hide"/>-->
