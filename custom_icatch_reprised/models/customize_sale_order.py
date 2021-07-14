@@ -233,7 +233,7 @@ class SaleOrderLine(models.Model):
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             elif rec.x_type == "ooh":
                 rec.product_uom_qty = rec.i_qty * 1
-                rec.product_uom_qty = rec.i_duration
+                # rec.product_uom_qty = rec.i_duration
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             else:
                 rec.product_uom_qty = rec.i_qty * rec.i_sqrfeet
