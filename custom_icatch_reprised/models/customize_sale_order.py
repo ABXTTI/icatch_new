@@ -201,31 +201,21 @@ class SaleOrderLine(models.Model):
     @api.depends('i_width', 'i_height', 'x_uom')
     def compute_sqfeet(self):
         for rec in self:
-            if rec.x_uom:
-                if rec.x_uom == "squarefeet":
-                    rec.i_sqrfeet = rec.i_width * rec.i_height
-                elif rec.x_uom == "inches":
-                    rec.i_sqrfeet = (rec.i_width * rec.i_height)/144
-                else:
-                    rec.i_sqrfeet = rec.i_width * rec.i_height
+            if rec.x_uom == "inches":
+                rec.i_sqrfeet = rec.i_width * rec.i_height /144
+            else:
+                rec.i_sqrfeet = rec.i_width * rec.i_height
+            # if rec.x_uom:
+            #     if rec.x_uom == "squarefeet":
+            #         rec.i_sqrfeet = rec.i_width * rec.i_height
+            #     elif rec.x_uom == "inches":
+            #         rec.i_sqrfeet = (rec.i_width * rec.i_height)/144
+            #     else:
+            #         rec.i_sqrfeet = rec.i_width * rec.i_height
 
     i_sqrfeet = fields.Float(string="Sqr.Feet", compute='compute_sqfeet', store=True)
 
     i_qty = fields.Float(string="Qty.ICT")
-
-    @api.onchange('product_id')
-    def on_product_change(self):
-        for rec in self:
-            rec.i_medium_description = ""
-            rec.i_mediadescription = ""
-            if rec.product_id.x_is_units:
-                rec.x_type = "unit"
-                rec.x_uom = ""
-            elif rec.x_is_ooh:
-                rec.x_type = "ooh"
-            else:
-                rec.x_uom = "squarefeet"
-                rec.x_type = ""
 
     @api.depends('i_qty', 'i_sqrfeet', 'x_uom')
     def compute_total_qty(self):
@@ -241,5 +231,19 @@ class SaleOrderLine(models.Model):
                 rec.product_uom_qty = rec.i_qty * rec.i_sqrfeet
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
 
-    product_uom_qty = fields.Float(string="Total Sqr.Feet/Qty", compute='compute_total_qty', store=True)
-    i_totalsqrfeet = fields.Float(string="Total Sqr.ft./Qty.", compute='compute_total_qty', store=True)
+    product_uom_qty = fields.Float(string="Total Sqr.Feet/Qty", compute='compute_total_qty')
+    i_totalsqrfeet = fields.Float(string="Total Sqr.ft./Qty.", compute='compute_total_qty')
+
+    @api.onchange('product_id')
+    def on_product_change(self):
+        for rec in self:
+            rec.i_medium_description = ""
+            rec.i_mediadescription = ""
+            if rec.product_id.x_is_units:
+                rec.x_type = "unit"
+                rec.x_uom = ""
+            elif rec.x_is_ooh:
+                rec.x_type = "ooh"
+            else:
+                rec.x_uom = "squarefeet"
+                rec.x_type = ""
