@@ -1,0 +1,20 @@
+
+.custom_class table thead > tr > th {
+    color: white;
+    background-color: #3386FF !important;
+    white-space: break-spaces !important;
+    text-align: left;
+}
+
+.custom_class table thead > tr > th:nth-child(1) {
+    width: 200px !important;
+    max-width: 200px !important;
+}
+.custom_class table thead > tr > th:nth-child(5) {
+    width: 92px !important;
+    max-width: 92px !important;
+}
+.custom_class table thead > tr > th:nth-child(6) {
+    width: 92px !important;
+    max-width: 92px !important;
+}
