@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="customize_invoice_form" model="ir.ui.view">
+        <field name="name">customize.invoice.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='price_subtotal']" position="after">
+                <field name="map_link"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='product_id']" position="after">
+                <field name="i_shop" optional="hide"/>
+                <field name="i_description" optional="hide"/>
+                <field name="i_city" optional="hide"/>
+                <field name="i_mediadescription" domain="[('related_product','=',product_id)]" optional="hide"/>
+<!--                <field name="i_printer" optional="hide"/>-->
+                <field name="i_medium_description" domain="[('related_product','=',product_id)]" optional="hide"/>
+                <field name="x_type" optional="show" readonly="True" force_save="True"/>
+                <field name="x_uom" optional="show" attrs="{'readonly': ['|', ('x_type','=','unit'), ('x_type', '=', 'ooh')]}"/>
+<!--                <field name="i_resolution" optional="hide"/>-->
+<!--                <field name="x_is_ooh" optional="hide"/>-->
+<!--                <field name="i_inktype" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>-->
+                <field name="i_size" optional="hide"/>
+                <field name="i_width" optional="hide"/>
+                <field name="i_height" optional="hide"/>
+                <field name="i_sqrfeet" optional="show"/>
+                <field name="i_qty" string="Qty" optional="show"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='name']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='quantity']" position="after">
+                <field name="i_totalsqrfeet"/>
+                <field name="i_tentative_start_date" optional="hide"/>
+                <field name="i_tentative_end_date" optional="hide"/>
+                <field name="i_duration" optional="hide"/>
+                <field name="i_lamination" optional="hide"/>
+                <field name="i_fabrication" optional="hide"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='quantity']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//group[@id='header_right_group']" position="inside">
+<!--                <label for="x_brand"/>-->
+                <field name="x_brand" domain="[('parent_id', '=', partner_id)]"/>
+<!--                <label for="x_campaign"/>-->
+                <field name="x_campaign" domain="[('related_brand', '=', x_brand)]"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="x_ntn"/>
+                <field name="x_strn"/>
+                <field name="x_mobile"/>
+                <field name="x_phone"/>
+                <field name="x_email"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

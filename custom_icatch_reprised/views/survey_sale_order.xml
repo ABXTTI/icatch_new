@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_survey_sale_order_tree">
+        <field name="name">view.survey.sale.order.tree</field>
+        <field name="model">survey.sale.order</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" string="Description"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_survey_sale_order_form">
+        <field name="name">view.survey.sale.order.form</field>
+        <field name="model">survey.sale.order</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', 'not in', 'draft')]}"/>
+                    <button name="action_create_sale_order" string="Create Sale Order" type="object" attrs="{'invisible': [('state', 'not in', 'confirm')]}"/>
+                    <button name="action_reset" string="Reset" type="object" attrs="{'invisible': [('state', 'not in', 'confirm')]}"/>
+<!--                    <button name="action_select_all_products" string="Select All Products" type="object" attrs="{'invisible': [('state', 'not in', 'draft')]}"/>-->
+<!--                    <button name="action_clear_products" string="Clear All Products" type="object" attrs="{'invisible': [('state', 'not in', 'draft')]}"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group name="survey_header">
+                        <group>
+                            <field name="partner_id" string="Customer" required="1" options="{'no_quick_create':True}"/>
+                            <field name="client_order_ref" string="Customer PO#"/>
+                            <field name="x_ntn"/>
+                            <field name="x_strn"/>
+                            <field name="x_mobile"/>
+                            <field name="x_phone"/>
+                            <field name="x_email"/>
+                        </group>
+                        <group>
+                            <field name="x_brand" options="{'no_quick_create':True}"/>
+                            <field name="x_campaign" options="{'no_quick_create':True}"/>
+                            <field name="survey_date"/>
+                        </group>
+                    </group>
+                    <label for="survey_lines"><h5>Sale Order To Be Created For Lines:</h5></label>
+                    <field name="survey_lines">
+                        <tree editable="bottom" create="1" edit="1" class="custom_class">
+                            <field name="product_template_id" domain="[('sale_ok', '=', True )]" options="{'no_quick_create':True}"/>
+                            <field name="i_shop" options="{'no_quick_create':True}"/>
+                            <field name="i_description"/>
+                            <field name="i_city" options="{'no_quick_create':True}"/>
+                            <field name="i_mediadescription" options="{'no_quick_create':True}"/>
+                            <field name="i_medium_description" options="{'no_quick_create':True}"/>
+                            <field name="x_type" force_save="1"/>
+                            <field name="x_uom"/>
+                            <field name="i_width"/>
+                            <field name="i_height"/>
+                            <field name="i_sqrfeet"/>
+                            <field name="i_qty"/>
+                            <field name="i_totalsqrfeet" readonly="1"/>
+                            <field name="product_uom"/>
+                            <field name="i_tentative_start_date" optional="hide"/>
+                            <field name="i_tentative_end_date" optional="hide"/>
+                            <field name="i_duration" optional="hide"/>
+                            <field name="price_unit"/>
+                            <field name="tax_id"/>
+                            <field name="price_subtotal"/>
+                            <field name="map_link" widget="url" text="link"/>
+                            <field name="approve"/>
+                            <field name="so_created" optional="hide"/>
+                        </tree>
+                    </field>
+                    <br/>
+                    <br/>
+                    <label for="survey_sale_created_lines"><h5>Sale Order Created For Lines:</h5></label>
+                    <field name="survey_sale_created_lines">
+                        <tree editable="bottom" create="1" edit="1" class="custom_class">
+                            <field name="product_template_id" domain="[('sale_ok', '=', True )]" options="{'no_quick_create':True}"/>
+                            <field name="i_shop" options="{'no_quick_create':True}"/>
+                            <field name="i_description"/>
+                            <field name="i_city" options="{'no_quick_create':True}"/>
+                            <field name="i_mediadescription" options="{'no_quick_create':True}"/>
+                            <field name="i_medium_description" options="{'no_quick_create':True}"/>
+                            <field name="x_type" force_save="1"/>
+                            <field name="x_uom"/>
+                            <field name="i_width"/>
+                            <field name="i_height"/>
+                            <field name="i_sqrfeet"/>
+                            <field name="i_qty"/>
+                            <field name="i_totalsqrfeet" readonly="1"/>
+                            <field name="product_uom"/>
+                            <field name="i_tentative_start_date" optional="hide"/>
+                            <field name="i_tentative_end_date" optional="hide"/>
+                            <field name="i_duration" optional="hide"/>
+                            <field name="price_unit"/>
+                            <field name="tax_id"/>
+                            <field name="price_subtotal"/>
+                            <field name="map_link" widget="url" text="link"/>
+                            <field name="approve"/>
+                            <field name="so_created" optional="hide"/>
+                        </tree>
+                    </field>
+                    <group name="note_group" col="6" class="mt-2 mt-md-0">
+                        <group colspan="4">
+                            <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                        </group>
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                            <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                <label for="amount_total"/>
+                            </div>
+                            <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <div class="oe_clear"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_survey_sale_order" model="ir.actions.act_window">
+            <field name="name">Survey Sale Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">survey.sale.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph</field>
+<!--            <field name="search_view_id" ref="sale_order_view_search_inherit_sale"/>-->
+            <field name="context">{}</field>
+<!--            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>-->
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Survey, the first step before a new sale!
+                </p>
+            </field>
+    </record>
+
+    <menuitem
+        id="menu_survey_sale_order"
+        name="Survey Sale Order"
+        action="action_survey_sale_order"
+        parent="sale.sale_order_menu"
+        sequence="0"
+    />
+
+</odoo>
