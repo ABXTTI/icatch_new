@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_purchase_wizard_tree" model="ir.ui.view">
+        <field name="name">view.purchase.wizard.tree</field>
+        <field name="model">create.purchase.order.lines.draft</field>
+        <field name="arch" type="xml">
+            <tree>
+                <header>
+                    <button name="purchase_order_create" string="Create Purchase Order" type="object" class="btn-primary"/>
+                    <button name="select_vendor" string="Select Vendor" type="object" class="btn-primary"/>
+<!--                    <button name="go_to_purchase_order" string="go_to_purchase_order" type="object" class="btn-primary"/>-->
+                </header>
+                <field name="product_id"/>
+                <field name="location"/>
+                <field name="description"/>
+                <field name="partner_id"/>
+                <field name="city"/>
+                <field name="mediadescription"/>
+                <field name="mediumdescription"/>
+                <field name="type"/>
+                <field name="uom"/>
+                <field name="width"/>
+                <field name="height"/>
+                <field name="sqrft"/>
+                <field name="qty"/>
+                <field name="tentative_start_date"/>
+                <field name="tentative_end_date"/>
+                <field name="duration"/>
+                <field name="po_created"/>
+                <field name="so_ref"/>
+            </tree>
+        </field>
+    </record>
+
+<!--    Search View-->
+    <record id="view_purchase_wizard_search" model="ir.ui.view">
+        <field name="name">view.purchase.wizard.tree</field>
+        <field name="model">create.purchase.order.lines.draft</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+            </search>
+        </field>
+    </record>
+
+
+
+    <record id="action_draft_order_lines_wizard" model="ir.actions.act_window">
+        <field name="name">Create Purchase Order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">create.purchase.order.lines.draft</field>
+        <field name="binding_view_types">tree</field>
+        <field name="view_mode">tree</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
+
