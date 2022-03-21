@@ -21,7 +21,23 @@ class SurveySaleOrder(models.Model):
     x_mobile = fields.Char(string="Mobile", related="partner_id.mobile")
     x_phone = fields.Char(string="Phone", related="partner_id.phone")
     x_email = fields.Char(string="Email", related="partner_id.email")
+
+    @api.onchange('x_brand')
+    def onchange_brand(self):
+        self.x_campaign = ""
+        if not self.x_brand.parent_id:
+            self.x_brand.parent_id = self.partner_id.id
+
     x_brand = fields.Many2one("ict.brand", string="Brand")
+
+
+    @api.onchange('x_campaign')
+    def onchange_campaign(self):
+        if not self.x_campaign.related_brand:
+            self.x_campaign.related_brand = self.x_brand.id
+        if not self.x_campaign.related_customer:
+            self.x_campaign.related_customer = self.partner_id.id
+
     x_campaign = fields.Many2one("ict.campaign", string="Campaign", required=True)
     note = fields.Text(string="Note")
     survey_lines = fields.One2many("survey.sale.order.line", "survey_so_ref", string="Survey Lines Sale Order To Be Created:", domain=[["so_created", "=", 0]])
@@ -114,6 +130,15 @@ class SurveySaleOrder(models.Model):
         result = super(SurveySaleOrder, self).create(vals)
         return result
 
+    def write(self, vals):
+        rtn = super(SurveySaleOrder, self).write(vals)
+        for rec in self.survey_lines:
+            var = str(rec.map_link)
+            if var:
+                if "https://www.google.com/search?q=" not in var:
+                    rec.map_link = "https://www.google.com/search?q=" + var
+        return rtn
+
 class SurveySaleOrderLine(models.Model):
     _name = "survey.sale.order.line"
 
@@ -139,8 +164,29 @@ class SurveySaleOrderLine(models.Model):
                 rec.x_type = ""
 
     i_city = fields.Many2one("ict.city", string="City")
+
+    @api.onchange('i_mediadescription')
+    def onchange_i_mediadescription(self):
+        # print("111111111111111111111111111111111111111111111111")
+        if not self.product_template_id and self.i_mediadescription.related_product:
+            raise ValidationError("Please Select Product First.")
+        else:
+            if not self.i_mediadescription.related_product:
+                self.i_mediadescription.related_product = self.product_template_id.id
+                # print("33333333333333333333333333333333333333333333")
     i_mediadescription = fields.Many2one("ict.media.description", string="Media Description")
+
+    @api.onchange('i_medium_description')
+    def onchange_i_mediumdescription(self):
+        # print("111111111111111111111111111111111111111111111111")
+        if not self.product_template_id and self.i_medium_description.related_product:
+            raise ValidationError("Please Select Product First.")
+        else:
+            if not self.i_medium_description.related_product:
+                self.i_medium_description.related_product = self.product_template_id.id
+                # print("33333333333333333333333333333333333333333333")
     i_medium_description = fields.Many2one("ict.medium.description", string="Medium Description")
+
     x_type = fields.Selection([
         ('ooh', 'OOH'),
         ('unit', 'Unit'),
@@ -161,21 +207,15 @@ class SurveySaleOrderLine(models.Model):
                 rec.i_sqrfeet = rec.i_width * rec.i_height
 
     i_sqrfeet = fields.Float(string="Sqr.Feet", compute="compute_sqfeet")
-
-    # @api.depends('i_width', 'i_height')
-    # def cal_sqrfeet(self):
-    #     for rec in self:
-    #         rec.i_sqrfeet = rec.i_width * rec.i_height
-
     i_qty = fields.Float(string="Qty")
 
     @api.depends('i_qty', 'i_sqrfeet', 'x_uom')
     def compute_total_qty(self):
         for rec in self:
             if rec.x_type == "unit":
-                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
+                rec.i_totalsqrfeet = rec.i_qty * 1
             elif rec.x_type == "ooh":
-                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
+                rec.i_totalsqrfeet = rec.i_qty * 1
             else:
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
 
@@ -185,21 +225,31 @@ class SurveySaleOrderLine(models.Model):
     tax_id = fields.Many2one("account.tax", string="Taxes")
     price_subtotal = fields.Float(string="Subtotal", compute="cal_subtotal")
 
-    @api.depends('price_unit', 'i_totalsqrfeet')
+    @api.depends('price_unit', 'i_totalsqrfeet', 'i_duration')
     def cal_subtotal(self):
         for rec in self:
-            rec.price_subtotal = rec.i_totalsqrfeet * rec.price_unit
+            if rec.x_type == "unit":
+                rec.price_subtotal = rec.i_qty * rec.price_unit
+            elif rec.x_type == "ooh":
+                rec.i_qty = rec.i_duration / 30
+                rec.price_subtotal = rec.i_qty * rec.price_unit if rec.i_duration else 0
+            else:
+                rec.price_subtotal = rec.i_totalsqrfeet * rec.price_unit
 
-
-    # @api.onchange('map_link')
-    # def get_maplink_value(self):
-    #     for rec in self:
-    #         latlong = rec.map_link
-    #         rec.map_link = "https://www.google.com/search?q=" + latlong
-    #         print("/////////////////////////////////////////////////////////")
 
     map_link = fields.Char(string="MAP")
 
     i_tentative_start_date = fields.Date(string="TentativeStart Date")
     i_tentative_end_date = fields.Date(string="TentativeEnd Date")
-    i_duration = fields.Float(string="Duration", readonly=True)
+
+    @api.depends('i_tentative_start_date', 'i_tentative_end_date')
+    def cal_duration(self):
+        for rec in self:
+            if rec.i_tentative_start_date and rec.i_tentative_end_date:
+                if rec.i_tentative_start_date > rec.i_tentative_end_date:
+                    raise ValidationError("Start Date cannot be earlier than End Date!!!!!!")
+                else:
+                    delta = rec.i_tentative_end_date - rec.i_tentative_start_date
+                    rec.i_duration = delta.days + 1
+
+    i_duration = fields.Float(string="Duration", compute="cal_duration", store=True)

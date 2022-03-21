@@ -237,20 +237,20 @@ class SaleOrderLine(models.Model):
         else:
             if not self.i_medium_description.related_product:
                 self.i_medium_description.related_product = self.product_id.id
-                print("33333333333333333333333333333333333333333333")
+                # print("33333333333333333333333333333333333333333333")
     i_medium_description = fields.Many2one('ict.medium.description', string="Medium Description")
     i_city = fields.Many2one('ict.city', string="City")
     i_shop = fields.Many2one('ict.shop', string="Location")
 
     @api.onchange('i_mediadescription')
     def onchange_i_mediadescription(self):
-        print("111111111111111111111111111111111111111111111111")
+        # print("111111111111111111111111111111111111111111111111")
         if not self.product_id and self.i_mediadescription.related_product:
             raise ValidationError("Please Select Product First.")
         else:
             if not self.i_mediadescription.related_product:
                 self.i_mediadescription.related_product = self.product_id.id
-                print("33333333333333333333333333333333333333333333")
+                # print("33333333333333333333333333333333333333333333")
 
     i_mediadescription = fields.Many2one('ict.media.description', string="Media Description")
     i_printer = fields.Many2one('ict.printer', string="Printer")
@@ -280,7 +280,7 @@ class SaleOrderLine(models.Model):
                 rec.product_uom_qty = rec.i_qty * 1
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             elif rec.x_type == "ooh":
-                rec.product_uom_qty = rec.i_qty * 1
+                rec.product_uom_qty = rec.i_duration / 30 if rec.i_duration else 0
                 # rec.product_uom_qty = rec.i_duration
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             else:

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="survey_format" model="ir.actions.report">
+        <field name="name">Survey</field>
+        <field name="model">survey.sale.order</field>
+        <field name="report_name">survey_print</field>
+        <field name="report_type">py3o</field>
+        <field name="report_file">reports/survey_print.odt</field>
+        <field name="py3o_filetype">odt</field>
+        <field name="module">custom_icatch_reprised</field>
+        <field name="py3o_template_fallback">reports/survey_print.odt</field>
+        <!-- Add entry in "Print" drop-down list -->
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_survey_sale_order"/>
+    </record>
+</odoo>

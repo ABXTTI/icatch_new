@@ -41,8 +41,8 @@
                             <field name="x_email"/>
                         </group>
                         <group>
-                            <field name="x_brand" options="{'no_quick_create':True}"/>
-                            <field name="x_campaign" options="{'no_quick_create':True}"/>
+                            <field name="x_brand" domain="[('parent_id', '=', partner_id)]" options="{'no_create_edit':True}"/>
+                            <field name="x_campaign" domain="[('related_brand', '=', x_brand)]" options="{'no_create_edit':True}"/>
                             <field name="survey_date"/>
                         </group>
                     </group>
@@ -53,8 +53,8 @@
                             <field name="i_shop" options="{'no_quick_create':True}"/>
                             <field name="i_description"/>
                             <field name="i_city" options="{'no_quick_create':True}"/>
-                            <field name="i_mediadescription" options="{'no_quick_create':True}"/>
-                            <field name="i_medium_description" options="{'no_quick_create':True}"/>
+                            <field name="i_mediadescription" domain="[('related_product','=',product_template_id)]" options="{'no_create_edit':True}"/>
+                            <field name="i_medium_description" domain="[('related_product','=',product_template_id)]" options="{'no_create_edit':True}"/>
                             <field name="x_type" force_save="1"/>
                             <field name="x_uom"/>
                             <field name="i_width"/>
