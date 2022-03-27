@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_select_vendor_wizard_form" model="ir.ui.view">
+        <field name="name">view.select.vendor.wizard.form</field>
+        <field name="model">select.vendor</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="view_change" string="Select" type="object" class="btn-primary"/>
+                </header>
+                <group>
+                    <group>
+                        <field name="vendor_id"/>
+                        <field name="so_ref"/>
+                        <field name="active_line_ids"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="select_vendor_wizard" model="ir.actions.act_window">
+        <field name="name">Select Vendor</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">create.purchase.order.lines.draft</field>
+        <field name="binding_view_types">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
+
