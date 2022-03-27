@@ -5,21 +5,29 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='price_subtotal']" position="after">
+                <field name="map_link"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create':True}</attribute>
+            </xpath>
             <xpath expr="//tree/field[@name='product_id']" position="after">
-                <field name="i_shop" optional="show"/>
-                <field name="i_city" optional="show"/>
-                <field name="po" attrs="{'readonly': [('po_created','=',True)]}"/>
-                <field name="po_created" optional="hide" readonly="True"/>
-                <field name="i_mediadescription" domain="[('related_product','=',product_id)]" optional="show"/>
-                <field name="i_printer" optional="hide"/>
-                <field name="i_medium_description" optional="show"/>
-                <field name="x_uom" optional="show"/>
+                <field name="i_shop" optional="show" options="{'no_quick_create':True}"/>
+                <field name="i_description" optional="show"/>
+                <field name="i_city" optional="show" options="{'no_quick_create':True}"/>
+<!--                <field name="po" attrs="{'readonly': [('po_created','=',True)]}"/>-->
+                <field name="po_created" optional="hide" readonly="True" force_save="True"/>
+                <field name="i_mediadescription" domain="[('related_product','=',product_id)]" optional="show" options="{'no_quick_create':True}"/>
+<!--                <field name="i_printer" optional="hide"/>-->
+                <field name="i_medium_description" domain="[('related_product','=',product_id)]" optional="show" options="{'no_quick_create':True}"/>
+                <field name="x_type" optional="show" readonly="True" force_save="True"/>
+                <field name="x_uom" optional="show" attrs="{'readonly': ['|', ('x_type','=','unit'), ('x_type', '=', 'ooh')]}"/>
 <!--                <field name="i_resolution" optional="hide"/>-->
-                <field name="x_is_ooh" optional="hide"/>
-                <field name="i_inktype" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_size" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_width" optional="show" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
-                <field name="i_height" optional="show" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>
+<!--                <field name="x_is_ooh" optional="hide"/>-->
+<!--                <field name="i_inktype" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>-->
+                <field name="i_size" optional="hide"/>
+                <field name="i_width" optional="show"/>
+                <field name="i_height" optional="show"/>
                 <field name="i_sqrfeet" optional="show"/>
                 <field name="i_qty" string="Qty" optional="show"/>
             </xpath>
@@ -31,17 +39,21 @@
                 <field name="i_tentative_start_date" optional="hide"/>
                 <field name="i_tentative_end_date" optional="hide"/>
                 <field name="i_duration" optional="hide"/>
-                <field name="i_lamination" optional="hide"/>
-                <field name="i_fabrication" optional="hide"/>
+                <field name="i_lamination" optional="hide" options="{'no_quick_create':True}"/>
+                <field name="i_fabrication" optional="hide" options="{'no_quick_create':True}"/>
             </xpath>
             <xpath expr="//tree/field[@name='product_uom_qty']" position="attributes">
                 <attribute name="optional">hide</attribute>
             </xpath>
             <xpath expr="//field[@name='validity_date']" position="before">
-                <field name="x_brand" domain="[('parent_id', '=', partner_id)]"/>
-                <field name="x_campaign" domain="[('related_brand', '=', x_brand)]"/>
+                <field name="x_brand" domain="[('parent_id', '=', partner_id)]" options="{'no_quick_create':True}"/>
+                <field name="x_campaign" domain="[('related_brand', '=', x_brand)]" options="{'no_quick_create':True}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_quick_create':True}</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="client_order_ref" string="Customer PO#" required="1"/>
                 <field name="x_ntn"/>
                 <field name="x_strn"/>
                 <field name="x_mobile"/>

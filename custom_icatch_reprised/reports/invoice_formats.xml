@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="invoice_print_format_1" model="ir.actions.report">
+        <field name="name">Invoice Format 1</field>
+        <field name="model">account.move</field>
+        <field name="report_name">invoice_print_format_1</field>
+        <field name="report_type">py3o</field>
+        <field name="report_file">reports/invoice_format_1.odt</field>
+        <field name="py3o_filetype">odt</field>
+        <field name="module">custom_icatch_reprised</field>
+        <field name="py3o_template_fallback">reports/invoice_format_1.odt</field>
+        <!-- Add entry in "Print" drop-down list -->
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+    </record>
+
+    <record id="invoice_print_format_2" model="ir.actions.report">
+        <field name="name">Invoice Format 2</field>
+        <field name="model">account.move</field>
+        <field name="report_name">invoice_print_format_2</field>
+        <field name="report_type">py3o</field>
+        <field name="report_file">reports/invoice_format_2.odt</field>
+        <field name="py3o_filetype">odt</field>
+        <field name="module">custom_icatch_reprised</field>
+        <field name="py3o_template_fallback">reports/invoice_format_2.odt</field>
+        <!-- Add entry in "Print" drop-down list -->
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+    </record>
+
+    <record id="invoice_print_format_3" model="ir.actions.report">
+        <field name="name">Invoice Format 3</field>
+        <field name="model">account.move</field>
+        <field name="report_name">invoice_print_format_3</field>
+        <field name="report_type">py3o</field>
+        <field name="report_file">reports/invoice_format_3.odt</field>
+        <field name="py3o_filetype">odt</field>
+        <field name="module">custom_icatch_reprised</field>
+        <field name="py3o_template_fallback">reports/invoice_format_3.odt</field>
+        <!-- Add entry in "Print" drop-down list -->
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+    </record>
+
+    <record id="invoice_print_format_4" model="ir.actions.report">
+        <field name="name">Invoice Format 4</field>
+        <field name="model">account.move</field>
+        <field name="report_name">invoice_print_format_4</field>
+        <field name="report_type">py3o</field>
+        <field name="report_file">reports/invoice_format_4.odt</field>
+        <field name="py3o_filetype">odt</field>
+        <field name="module">custom_icatch_reprised</field>
+        <field name="py3o_template_fallback">reports/invoice_format_4.odt</field>
+        <!-- Add entry in "Print" drop-down list -->
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+    </record>
+
+</odoo>

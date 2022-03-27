@@ -8,3 +8,5 @@ access_ict_printer_manager,access.ict.printer.manager,model_ict_printer,,1,1,1,1
 access_ict_resolution_manager,access.ict.resolution.manager,model_ict_resolution,,1,1,1,1
 access_ict_shop_manager,access.ict.shop.manager,model_ict_shop,,1,1,1,1
 access_ict_city_manager,access.ict.city.manager,model_ict_city,,1,1,1,1
+access_survey_sale_order_manager,access.survey.sale.order.manager,model_survey_sale_order,,1,1,1,1
+access_survey_sale_order_line_manager,access.survey.sale.order.line.manager,model_survey_sale_order_line,,1,1,1,1

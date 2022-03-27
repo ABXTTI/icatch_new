@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="sale_order_1" model="ir.actions.report">
+        <field name="name">Sale_order_1</field>
+        <field name="model">sale.order</field>
+        <field name="report_name">so_qo_1</field>
+        <field name="report_type">py3o</field>
+        <field name="report_file">reports/sale_order_1.odt</field>
+        <field name="py3o_filetype">odt</field>
+        <field name="module">custom_icatch_reprised</field>
+        <field name="py3o_template_fallback">reports/sale_order_1.odt</field>
+        <!-- Add entry in "Print" drop-down list -->
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+    </record>
+
+    <record id="sale_order_2" model="ir.actions.report">
+        <field name="name">Sale_order_2</field>
+        <field name="model">sale.order</field>
+        <field name="report_name">so_qo_2</field>
+        <field name="report_type">py3o</field>
+        <field name="report_file">reports/sale_order_2.odt</field>
+        <field name="py3o_filetype">odt</field>
+        <field name="module">custom_icatch_reprised</field>
+        <field name="py3o_template_fallback">reports/sale_order_2.odt</field>
+        <!-- Add entry in "Print" drop-down list -->
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+    </record>
+
+</odoo>
