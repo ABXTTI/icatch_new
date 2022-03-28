@@ -272,7 +272,6 @@ class SaleOrderLine(models.Model):
 
 
     i_sqrfeet = fields.Float(string="Sqr.Feet", compute='compute_sqfeet', store=True)
-
     i_qty = fields.Float(string="Qty.ICT")
 
     @api.depends('i_qty', 'i_sqrfeet', 'x_uom')
@@ -283,7 +282,7 @@ class SaleOrderLine(models.Model):
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             elif rec.x_type == "ooh":
                 rec.product_uom_qty = rec.i_duration / 30 if rec.i_duration else 0
-                # rec.product_uom_qty = rec.i_duration
+                rec.i_qty = 1
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             else:
                 rec.product_uom_qty = rec.i_qty * rec.i_sqrfeet

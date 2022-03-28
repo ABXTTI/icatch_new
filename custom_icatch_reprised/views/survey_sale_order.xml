@@ -44,6 +44,7 @@
                             <field name="x_brand" domain="[('parent_id', '=', partner_id)]" options="{'no_create_edit':True}"/>
                             <field name="x_campaign" domain="[('related_brand', '=', x_brand)]" options="{'no_create_edit':True}"/>
                             <field name="survey_date"/>
+                            <field name="analytic_account_id"/>
                         </group>
                     </group>
                     <label for="survey_lines"><h5>Sale Order To Be Created For Lines:</h5></label>

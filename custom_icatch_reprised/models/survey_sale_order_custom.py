@@ -8,6 +8,7 @@ class SurveySaleOrder(models.Model):
     _name = "survey.sale.order"
     _description = "Create Survey Sale Order/Quotation"
 
+    analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account")
     name = fields.Char(string='Order Reference', required=True, copy=False, readonly=True, states={'draft': [('readonly', False)]}, index=True, default=lambda self: 'New')
     survey_date = fields.Date(string="Survey Date", default=datetime.datetime.today())
     state = fields.Selection([
@@ -28,7 +29,7 @@ class SurveySaleOrder(models.Model):
         if not self.x_brand.parent_id:
             self.x_brand.parent_id = self.partner_id.id
 
-    x_brand = fields.Many2one("ict.brand", string="Brand")
+    x_brand = fields.Many2one("ict.brand", string="Brand", required=True)
 
     @api.onchange('x_campaign')
     def onchange_campaign(self):
@@ -36,8 +37,16 @@ class SurveySaleOrder(models.Model):
             self.x_campaign.related_brand = self.x_brand.id
         if not self.x_campaign.related_customer:
             self.x_campaign.related_customer = self.partner_id.id
+        if self.x_campaign.name:
+            analytic_account_object = self.env['account.analytic.account']
+            analytic_account_exist = analytic_account_object.search([('name', '=', self.x_campaign.name)])
+            if analytic_account_exist:
+                self.analytic_account_id = analytic_account_exist.id
+            else:
+                new = analytic_account_object.create({'name': self.x_campaign.name})
+                self.analytic_account_id = new.id
 
-    x_campaign = fields.Many2one("ict.campaign", string="Campaign", required=True)
+    x_campaign = fields.Many2one("ict.campaign", string="Campaign")
     note = fields.Text(string="Note")
     survey_lines = fields.One2many("survey.sale.order.line", "survey_so_ref", string="Survey Lines Sale Order To Be Created:", domain=[["so_created", "=", 0]])
     survey_sale_created_lines = fields.One2many("survey.sale.order.line", 'survey_so_ref', string="Survey Lines Sale Order Created:", domain=[["so_created", "=", 1]])
@@ -105,6 +114,7 @@ class SurveySaleOrder(models.Model):
                 'x_brand': self.x_brand.id,
                 'x_campaign': self.x_campaign.id,
                 'survey_ref': self.id,
+                'analytic_account_id': self.analytic_account_id.id,
                 'order_line': list,
                 })
             return {
