@@ -36,7 +36,7 @@ class SaleOrder(models.Model):
                 "tentative_start_date": rec.i_tentative_start_date,
                 "tentative_end_date": rec.i_tentative_end_date,
                 "duration": rec.i_duration,
-                "po_created": rec.po_created,
+                # "po_created": rec.po_created,
                 "so_ref": id,
                 "order_line_id": rec.id,
             })
@@ -46,12 +46,17 @@ class SaleOrder(models.Model):
         var = self.env["create.purchase.order.lines.draft"]
         id = self.id
         existing = var.search([('so_ref', '=', id)])
+
         if existing:
             for rec in existing:
                 rec.unlink()
         for rec in self.order_line:
+            req_service_purchase_product_id = self.env['product.product'].search([('default_code', '=', (rec.product_id.default_code + "-P"))])
+            if rec.product_id.require_service_purchase_product:
+                if not req_service_purchase_product_id:
+                    raise ValidationError("Required Service Purchase Product for "+ rec.product_id.name + "[" + rec.product_id.default_code + "]" + " does not exist !!!!")
             var.sudo().create({
-                "product_id": rec.product_id.id,
+                "product_id": req_service_purchase_product_id.id if req_service_purchase_product_id else rec.product_id.id,
                 "location": rec.i_shop.id,
                 "description": rec.i_description,
                 "city": rec.i_city.id,
@@ -140,8 +145,11 @@ class CreatePurchaseOrderLinesDraft(models.TransientModel):
                 sale_order_line_id = self.env['sale.order.line'].search([('id', '=', record.order_line_id)])
                 sale_order_line_id.po_created = True
                 if record and record.partner_id.id == vendor:
+                    req_service_purchase_product = self.env['product.product'].search([('default_code', '=', (record.product_id.default_code + "-P"))])
+                    if not req_service_purchase_product:
+                        raise ValidationError("Required Service Purchase Product Does Not Exist For "+ record.product_id.name +"["+ record.product_id.default_code +"].")
                     values.append([0, 0, {
-                        "product_id": record.product_id.id,
+                        "product_id": req_service_purchase_product.id,
                         "i_shop": record.location.id,
                         "i_city": record.city.id,
                         "i_mediadescription": record.mediadescription.id,
@@ -151,7 +159,7 @@ class CreatePurchaseOrderLinesDraft(models.TransientModel):
                         "i_sqrfeet": record.sqrft,
                         "i_qty": record.qty,
                     }])
-            print(values)
+            # print(values)
 
             res = self.env['purchase.order']
             purchase_order = res.create({

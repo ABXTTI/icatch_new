@@ -9,7 +9,9 @@
     "requirements.",
     "website": "www.ta.net",
     "category": "Purchase Management",
-    "depends": ["sale"],
+    "depends": ['sale',
+                'custom_icatch_reprised',
+                ],
     "data": [
         "security/ir.model.access.csv",
         "views/create_purchase_order.xml",
