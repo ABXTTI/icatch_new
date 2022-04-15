@@ -240,8 +240,7 @@ class SurveySaleOrderLine(models.Model):
             if rec.x_type == "unit":
                 rec.price_subtotal = rec.i_qty * rec.price_unit
             elif rec.x_type == "ooh":
-                rec.i_qty = rec.i_duration / 30
-                rec.price_subtotal = rec.i_qty * rec.price_unit if rec.i_duration else 0
+                rec.price_subtotal = rec.i_duration / 30 *rec.i_qty * rec.price_unit if rec.i_duration else 0
             else:
                 rec.price_subtotal = rec.i_totalsqrfeet * rec.price_unit
 

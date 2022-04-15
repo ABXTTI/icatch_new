@@ -16,23 +16,26 @@ class ProductTemplate(models.Model):
     x_is_medium_description = fields.Boolean("Is Medium Description", defualt=False)
     require_service_purchase_product = fields.Boolean("Required Service Purchase Product")
 
-    def check_service_purchase_product(self):
+
+    @api.model
+    def check_default_codes_and_service_purchase_product(self):
         no_default_codes = self.search([('default_code', '=', False)])
         if no_default_codes:
             for product in no_default_codes:
                 product.default_code = 100000 + product.id
 
-        products = self.search([('require_service_purchase_product', '=', True),('default_code', '!=', False)])
-        if products:
-            for product in products:
-                exist = self.search([('default_code', '=' , str(product.default_code) + "-P")])
-                if not exist:
-                    obj = self.env["product.template"].create({'name': self.name,
-                                 'purchase_ok': True,
-                                 'sale_ok': False,
-                                 'type': 'service',
-                                 })
-                    obj.default_code = str(self.default_code) + "-P"
+        if self.require_service_purchase_product:
+            exist = self.search([('default_code', '=', (str(self.default_code) + "-P"))])
+            if not exist:
+                obj = self.env["product.template"].create({'name': self.name,
+                                                           'purchase_ok': True,
+                                                           'sale_ok': False,
+                                                           'type': 'service',
+                                                           })
+                obj.default_code = self.default_code + "-P"
+
+    def check_service_purchase_product(self):
+        self.check_default_codes_and_service_purchase_product()
 
 #     ########### Overriding Create Method####
     @api.model_create_multi
@@ -148,10 +151,6 @@ class SaleOrder(models.Model):
 
                             bom_id.bom_line_ids = lines
                 else:
-                    bom = self.env['mrp.bom']
-                    bom.create({
-                        'product_tmpl_id': rec.product_id.id,
-                    })
                     if not rec.po:
                         if rec.i_mediadescription and rec.i_medium_description:
                             lines = []
@@ -166,7 +165,13 @@ class SaleOrder(models.Model):
                                 for p in product1:
                                     lines.append((0, 0, {'product_id': p.id}))
 
-                            bom_id.bom_line_ids = lines
+                            # bom_id.bom_line_ids = lines
+                            bom = self.env['mrp.bom']
+                            bom.create({
+                                'product_tmpl_id': rec.product_id.id,
+                                'product_uom_id': rec.product_id.uom_id.id,
+                                'bom_line_ids': lines
+                            })
                     if rec.po:
                         if rec.i_mediadescription and rec.i_medium_description:
                             lines = []
@@ -176,7 +181,13 @@ class SaleOrder(models.Model):
                                 for each in product:
                                     lines.append((0, 0, {'product_id': each.id}))
 
-                            bom_id.bom_line_ids = lines
+                            # bom_id.bom_line_ids = lines
+                            bom = self.env['mrp.bom']
+                            bom.create({
+                                'product_tmpl_id': rec.product_id.id,
+                                'product_uom_id': rec.product_id.uom_id.id,
+                                'bom_line_ids': lines
+                            })
 
 
         # ######################################################
@@ -207,8 +218,8 @@ class SaleOrderLine(models.Model):
     survey_line_id = fields.Many2one("survey.sale.order.line", string="Survey Line ID")
     i_description = fields.Char(string="Description")
     map_link = fields.Char("MAP")
-    po = fields.Boolean(string="PO")
-    po_created = fields.Boolean(string="PO Created", default=False)
+    po = fields.Boolean(string="PO", copy=False)
+    po_created = fields.Boolean(string="PO Created", default=False, copy=False)
     x_uom = fields.Selection([('squarefeet', 'Sqr.Ft.'), ('inches', 'Inches')], 'Measure', default="")
     x_type = fields.Selection([('ooh', 'OOH'), ('unit', 'Unit')], 'Type')
     x_is_ooh = fields.Boolean(related="product_id.x_is_ooh")

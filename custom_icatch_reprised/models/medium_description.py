@@ -14,11 +14,13 @@ class IctMediumDesiption(models.Model):
     def create(self, vals):
         print("its working")
         product = self.env['product.template']
-        product.create({
-            'name': vals['name'],
-            'type': "product",
-            'sale_ok': False,
-            'purchase_ok': True,
-            'x_is_mediadescription': True,
-        })
+        exist = product.search([('name', '=', vals['name'])])
+        if not exist:
+            product.create({
+                'name': vals['name'],
+                'type': "product",
+                'sale_ok': False,
+                'purchase_ok': True,
+                'x_is_mediadescription': True,
+            })
         return super(IctMediumDesiption, self).create(vals)
