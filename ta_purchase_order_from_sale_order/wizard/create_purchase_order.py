@@ -56,7 +56,7 @@ class SaleOrder(models.Model):
                 if not req_service_purchase_product_id:
                     raise ValidationError("Required Service Purchase Product for "+ rec.product_id.name + "[" + rec.product_id.default_code + "]" + " does not exist !!!!")
             var.sudo().create({
-                "product_id": req_service_purchase_product_id.id if req_service_purchase_product_id else rec.product_id.id,
+                "product_id": rec.product_id.id,
                 "location": rec.i_shop.id,
                 "description": rec.i_description,
                 "city": rec.i_city.id,
