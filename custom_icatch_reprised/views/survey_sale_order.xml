@@ -50,12 +50,12 @@
                     <label for="survey_lines"><h5>Sale Order To Be Created For Lines:</h5></label>
                     <field name="survey_lines">
                         <tree editable="bottom" create="1" edit="1" class="custom_class">
-                            <field name="product_template_id" domain="[('sale_ok', '=', True )]" options="{'no_quick_create':True}"/>
+                            <field name="product_template_id" domain="[('sale_ok', '=', True ), ('customer_rank', '>', 0)]" options="{'no_quick_create':True}"/>
                             <field name="i_shop" options="{'no_quick_create':True}"/>
                             <field name="i_description"/>
                             <field name="i_city" options="{'no_quick_create':True}"/>
-                            <field name="i_mediadescription" options="{'no_create_edit':True}"/>
-                            <field name="i_medium_description" options="{'no_create_edit':True}"/>
+                            <field name="i_mediadescription" domain="[('related_product','=',product_template_id)]" options="{'no_create_edit':True}"/>
+                            <field name="i_medium_description" domain="[('related_product','=',product_template_id)]" options="{'no_create_edit':True}"/>
                             <field name="x_type" force_save="1"/>
                             <field name="x_uom"/>
                             <field name="i_width"/>

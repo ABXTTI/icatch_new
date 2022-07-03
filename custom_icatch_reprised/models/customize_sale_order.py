@@ -208,6 +208,7 @@ class SaleOrder(models.Model):
         self.with_context(context)._action_confirm()
         if self.env.user.has_group('sale.group_auto_done_setting'):
             self.action_done()
+
         return True
 
 
