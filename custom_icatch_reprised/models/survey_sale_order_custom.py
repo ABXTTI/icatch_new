@@ -223,12 +223,7 @@ class SurveySaleOrderLine(models.Model):
     @api.depends('i_qty', 'i_sqrfeet', 'x_uom')
     def compute_total_qty(self):
         for rec in self:
-            if rec.x_type == "unit":
-                rec.i_totalsqrfeet = rec.i_qty * 1
-            elif rec.x_type == "ooh":
-                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
-            else:
-                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
+            rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
 
     i_totalsqrfeet = fields.Float(string="Total Sqrft./Qty", compute="compute_total_qty")
     product_uom = fields.Many2one("uom.uom", string="UoM")
