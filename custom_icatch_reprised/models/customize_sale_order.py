@@ -9,6 +9,7 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     is_roll = fields.Boolean("Is Roll")
+    is_mm = fields.Boolean("Is MM")
     size_sqrft = fields.Float(string="Size Sqrfeet")
     x_is_units = fields.Boolean("Is Unit")
     x_is_ooh = fields.Boolean("Is OOH")
@@ -125,7 +126,7 @@ class SaleOrder(models.Model):
                         for line in line_ids:
                             if line.product_id.x_is_mediadescription or line.product_id.x_is_medium_description:
                                 line.unlink()
-                    if rec.x_type == 'unit':
+                    if rec.product_id.is_mm:
                         if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
@@ -140,7 +141,7 @@ class SaleOrder(models.Model):
                                     lines.append((0, 0, {'product_id': p.id}))
 
                             bom_id.bom_line_ids = lines
-                    elif not rec.x_type == 'unit':
+                    elif not rec.product_id.is_mm:
                         if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
@@ -151,7 +152,7 @@ class SaleOrder(models.Model):
 
                             bom_id.bom_line_ids = lines
                 else:
-                    if rec.x_type == 'unit':
+                    if rec.product_id.is_mm:
                         if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
@@ -172,7 +173,7 @@ class SaleOrder(models.Model):
                                 'product_uom_id': rec.product_id.uom_id.id,
                                 'bom_line_ids': lines
                             })
-                    elif not rec.x_type == 'unit':
+                    elif not rec.product_id.is_mm:
                         if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
