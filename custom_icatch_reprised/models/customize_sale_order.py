@@ -126,7 +126,8 @@ class SaleOrder(models.Model):
                         for line in line_ids:
                             if line.product_id.x_is_mediadescription or line.product_id.x_is_medium_description:
                                 line.unlink()
-                            elif line.product_id.size_sqrft:
+                        for line in line_ids:
+                            if line.product_id.size_sqrft:
                                 line.product_qty = rec.i_sqrfeet * line.product_id.size_sqrft
                             else:
                                 line.product_qty = 1
