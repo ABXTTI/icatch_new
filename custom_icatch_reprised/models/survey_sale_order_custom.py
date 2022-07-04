@@ -66,6 +66,8 @@ class SurveySaleOrder(models.Model):
         self.amount_tax = tax
         self.amount_total = sum + tax
 
+    amount_total_to_be_created = fields.Float(string="Total SO To Be Created")
+    amount_total_created = fields.Float(string="Total SO Created")
     amount_untaxed = fields.Float(string="Untaxed Amount", compute="compute_untaxed_amount")
     amount_tax = fields.Float(string="Taxes", compute="compute_untaxed_amount")
     amount_total = fields.Float(string="Total", compute="compute_untaxed_amount")
@@ -224,7 +226,7 @@ class SurveySaleOrderLine(models.Model):
             if rec.x_type == "unit":
                 rec.i_totalsqrfeet = rec.i_qty * 1
             elif rec.x_type == "ooh":
-                rec.i_totalsqrfeet = rec.i_qty * 1
+                rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             else:
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
 

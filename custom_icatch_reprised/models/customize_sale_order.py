@@ -125,8 +125,8 @@ class SaleOrder(models.Model):
                         for line in line_ids:
                             if line.product_id.x_is_mediadescription or line.product_id.x_is_medium_description:
                                 line.unlink()
-                    if not rec.po:
-                        if rec.i_mediadescription and rec.i_medium_description:
+                    if rec.x_type == 'unit':
+                        if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
                                 [('name', '=', rec.i_medium_description.name)])
@@ -140,8 +140,8 @@ class SaleOrder(models.Model):
                                     lines.append((0, 0, {'product_id': p.id}))
 
                             bom_id.bom_line_ids = lines
-                    if rec.po:
-                        if rec.i_mediadescription and rec.i_medium_description:
+                    elif not rec.x_type == 'unit':
+                        if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
                                 [('name', '=', rec.i_mediadescription.name)])
@@ -151,8 +151,8 @@ class SaleOrder(models.Model):
 
                             bom_id.bom_line_ids = lines
                 else:
-                    if not rec.po:
-                        if rec.i_mediadescription and rec.i_medium_description:
+                    if rec.x_type == 'unit':
+                        if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
                                 [('name', '=', rec.i_medium_description.name)])
@@ -172,8 +172,8 @@ class SaleOrder(models.Model):
                                 'product_uom_id': rec.product_id.uom_id.id,
                                 'bom_line_ids': lines
                             })
-                    if rec.po:
-                        if rec.i_mediadescription and rec.i_medium_description:
+                    elif not rec.x_type == 'unit':
+                        if rec.i_mediadescription or rec.i_medium_description:
                             lines = []
                             product = self.env['product.product'].search(
                                 [('name', '=', rec.i_mediadescription.name)])
@@ -286,15 +286,14 @@ class SaleOrderLine(models.Model):
     i_sqrfeet = fields.Float(string="Sqr.Feet", compute='compute_sqfeet', store=True)
     i_qty = fields.Float(string="Qty.ICT")
 
-    @api.depends('i_qty', 'i_sqrfeet', 'x_uom')
+    @api.depends('i_qty', 'i_sqrfeet', 'x_uom', 'price_subtotal')
     def compute_total_qty(self):
         for rec in self:
             if rec.x_type == "unit":
                 rec.product_uom_qty = rec.i_qty * 1
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             elif rec.x_type == "ooh":
-                rec.product_uom_qty = rec.i_duration / 30 if rec.i_duration else 0
-                rec.i_qty = 1
+                rec.product_uom_qty = rec.i_qty * rec.i_duration / 30 if rec.i_duration else 0
                 rec.i_totalsqrfeet = rec.i_qty * rec.i_sqrfeet
             else:
                 rec.product_uom_qty = rec.i_qty * rec.i_sqrfeet
