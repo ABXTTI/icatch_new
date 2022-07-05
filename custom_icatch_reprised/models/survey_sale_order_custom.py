@@ -53,7 +53,9 @@ class SurveySaleOrder(models.Model):
 
     def compute_untaxed_amount(self):
         sum = 0
+        sum2 = 0
         tax = 0
+        tax2 = 0
         for rec in self.survey_lines:
             sum += rec.price_subtotal
             if rec.tax_id.amount_type == "percent":
@@ -62,12 +64,25 @@ class SurveySaleOrder(models.Model):
                 tax += rec.tax_id.amount * rec.price_subtotal / (100 + rec.tax_id.amount)
                 sum = sum - tax
 
+        for rec in self.survey_sale_created_lines:
+            sum2 += rec.price_subtotal
+            if rec.tax_id.amount_type == "percent":
+                tax2 += rec.tax_id.amount * rec.price_subtotal / 100
+            elif rec.tax_id.amount_type == "division":
+                tax2 += rec.tax_id.amount * rec.price_subtotal / (100 + rec.tax_id.amount)
+                sum2 = sum2 - tax2
+
         self.amount_untaxed = sum
         self.amount_tax = tax
         self.amount_total = sum + tax
+        self.amount_untaxed_so_to_be_created = sum2
+        self.amount_tax_so_to_be_created = tax2
+        self.amount_total_so_to_be_created = sum2 + tax2
 
-    amount_total_to_be_created = fields.Float(string="Total SO To Be Created")
-    amount_total_created = fields.Float(string="Total SO Created")
+    amount_total_so_to_be_created = fields.Float(string="Total SO To Be Created", compute="compute_untaxed_amount")
+    amount_tax_so_to_be_created = fields.Float(string="Total SO To Be Created", compute="compute_untaxed_amount")
+    amount_untaxed_so_to_be_created = fields.Float(string="Total SO To Be Created", compute="compute_untaxed_amount")
+    # amount_total_created = fields.Float(string="Total SO Created")
     amount_untaxed = fields.Float(string="Untaxed Amount", compute="compute_untaxed_amount")
     amount_tax = fields.Float(string="Taxes", compute="compute_untaxed_amount")
     amount_total = fields.Float(string="Total", compute="compute_untaxed_amount")

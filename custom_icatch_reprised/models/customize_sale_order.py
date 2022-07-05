@@ -126,9 +126,8 @@ class SaleOrder(models.Model):
                         for line in line_ids:
                             if line.product_id.x_is_mediadescription or line.product_id.x_is_medium_description:
                                 line.unlink()
-                        for line in line_ids:
-                            if line.product_id.size_sqrft:
-                                line.product_qty = rec.i_sqrfeet * line.product_id.size_sqrft
+                            elif line.product_id.size_sqrft:
+                                line.product_qty = rec.i_totalsqrfeet * line.product_id.size_sqrft
                             else:
                                 line.product_qty = 1
                     if rec.product_id.is_mm:
@@ -139,13 +138,13 @@ class SaleOrder(models.Model):
                             if product:
                                 for p in product:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_sqrfeet * line.product_id.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_sqrfeet * p.product_id.size_sqrft) if p.size_sqrft else 1.0}))
                             product1 = self.env['product.product'].search(
                                 [('name', '=', rec.i_mediadescription.name)])
                             if product1:
                                 for p in product1:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_sqrfeet * line.product_id.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_sqrfeet * p.product_id.size_sqrft) if p.size_sqrft else 1.0}))
 
                             bom_id.bom_line_ids = lines
                     elif not rec.product_id.is_mm:
@@ -156,7 +155,7 @@ class SaleOrder(models.Model):
                             if product:
                                 for p in product:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_sqrfeet * line.product_id.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_sqrfeet * p.product_id.size_sqrft) if p.size_sqrft else 1.0}))
 
                             bom_id.bom_line_ids = lines
                 else:
@@ -173,7 +172,7 @@ class SaleOrder(models.Model):
                             if product1:
                                 for p in product1:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_sqrfeet * line.product_id.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_totalsqrfeet * p.product_id.size_sqrft) if p.size_sqrft else 1.0}))
 
                             # bom_id.bom_line_ids = lines
                             bom = self.env['mrp.bom']
