@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='price_subtotal']" position="after">
-                <field name="map_link"/>
+                <field name="map_link" optional="hide"/>
             </xpath>
             <xpath expr="//tree/field[@name='product_id']" position="attributes">
                 <attribute name="options">{'no_quick_create':True}</attribute>
@@ -21,7 +21,7 @@
 <!--                <field name="i_printer" optional="hide"/>-->
                 <field name="i_medium_description" domain="[('related_product','=',product_id)]" optional="show" options="{'no_quick_create':True}"/>
                 <field name="x_type" optional="show" readonly="True" force_save="True"/>
-                <field name="x_uom" optional="show" attrs="{'readonly': ['|', ('x_type','=','unit'), ('x_type', '=', 'ooh')]}"/>
+                <field name="x_uom" optional="hide" attrs="{'readonly': ['|', ('x_type','=','unit'), ('x_type', '=', 'ooh')]}"/>
 <!--                <field name="i_resolution" optional="hide"/>-->
 <!--                <field name="x_is_ooh" optional="hide"/>-->
 <!--                <field name="i_inktype" optional="hide" attrs="{'readonly': [('x_is_ooh','=',True)]}"/>-->

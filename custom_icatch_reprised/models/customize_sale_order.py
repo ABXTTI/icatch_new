@@ -138,13 +138,13 @@ class SaleOrder(models.Model):
                             if product:
                                 for p in product:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_sqrfeet * p.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_qty * p.size_sqrft) if p.size_sqrft else 1.0}))
                             product1 = self.env['product.product'].search(
                                 [('name', '=', rec.i_mediadescription.name)])
                             if product1:
                                 for p in product1:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_sqrfeet * p.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_qty * p.size_sqrft) if p.size_sqrft else 1.0}))
 
                             bom_id.bom_line_ids = lines
                     elif not rec.product_id.is_mm:
@@ -155,7 +155,7 @@ class SaleOrder(models.Model):
                             if product:
                                 for p in product:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_sqrfeet * p.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_qty * p.size_sqrft) if p.size_sqrft else 1.0}))
 
                             bom_id.bom_line_ids = lines
                 else:
@@ -172,7 +172,7 @@ class SaleOrder(models.Model):
                             if product1:
                                 for p in product1:
                                     lines.append((0, 0, {'product_id': p.id,
-                                                         'product_qty': (rec.i_totalsqrfeet * p.size_sqrft) if p.size_sqrft else 1.0}))
+                                                         'product_qty': (rec.i_qty * p.size_sqrft) if p.size_sqrft else 1.0}))
 
                             # bom_id.bom_line_ids = lines
                             bom = self.env['mrp.bom']
