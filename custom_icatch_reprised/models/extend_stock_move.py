@@ -64,7 +64,7 @@ class StockPicking(models.Model):
                                                     'picking_id': rec.picking_id.id,
                                                     'move_id': rec.id,
                                                     'location_dest_id': rec.location_dest_id.id,
-                                                    'lot_name': 'SR'+str(rec.product_id.id)+rec.picking_id.origin + "-" + str(rec.id) + "-" + str(record+1),
+                                                    'lot_name': rec.picking_id.origin + "-W-" + str(rec.i_width) + "-" + str(record+1),
                                                     'qty_done': qty_set
                                             }))
                         print(records)
